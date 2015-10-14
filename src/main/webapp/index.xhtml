@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    JBoss, Home of Professional Open Source
+    Copyright 2013, Red Hat, Inc. and/or its affiliates, and individual
+    contributors by the @authors tag. See the copyright.txt in the
+    distribution for a full listing of individual contributors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="/WEB-INF/templates/default.xhtml">
+    <ui:define name="content">
+        <h:form>
+            <h:panelGroup rendered="#{not empty basket}">
+                <h2>Basket</h2>
+                <h:dataTable styleClass="table table-striped" var="orderItem" value="#{basket}">
+                    <h:column>
+                        <f:facet name="header">Name</f:facet>
+                        #{orderItem.element.name}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Count</f:facet>
+                        #{orderItem.count}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Price</f:facet>
+                        #{orderItem.element.cost * orderItem.count}
+                    </h:column>
+                </h:dataTable>
+
+                <div class="btn-group" role="group">
+                    <h:commandButton action="#{orderController.purchaseOrder}" styleClass="btn btn-success"
+                                     value="Purchase"/>
+                    <h:commandButton action="#{orderController.clearBasket}" styleClass="btn btn-danger"
+                                     value="Clear busket"/>
+                </div>
+            </h:panelGroup>
+
+            <h2>Products</h2>
+            <h:dataTable styleClass="table table-striped" var="product" value="#{products}">
+                <h:column>
+                    <f:facet name="header">Id</f:facet>
+                    #{product.id}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Name</f:facet>
+                    #{product.name}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Cost</f:facet>
+                    #{product.cost}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Add</f:facet>
+                    <h:commandButton action="#{orderController.addProductToBasket(product)}"
+                                     styleClass="btn btn-primary" value="+"/>
+                </h:column>
+            </h:dataTable>
+
+            <h:panelGroup rendered="#{not empty orders}">
+                <h2>Your orders</h2>
+                <ui:repeat var="order" value="#{orders}">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Order</h3>
+                        </div>
+                        <h:dataTable styleClass="table table-striped" var="item" value="#{order.items}">
+                            <h:column>
+                                <f:facet name="header">Name</f:facet>
+                                #{item.product.name}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Quantity</f:facet>
+                                #{item.quantity}
+                            </h:column>
+                        </h:dataTable>
+                    </div>
+                </ui:repeat>
+            </h:panelGroup>
+        </h:form>
+    </ui:define>
+</ui:composition>
